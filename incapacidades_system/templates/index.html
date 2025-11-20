@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Incapacidades</title>
+</head>
+<body>
+    <h1>Listado de incapacidades</h1>
+
+    <a href="/nuevo">Registrar nueva incapacidad</a>
+
+    <table border="1" cellpadding="8">
+        <tr>
+            <th>ID</th>
+            <th>Empleado</th>
+            <th>Tipo</th>
+            <th>Entidad</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+
+        {% for i in incapacidades %}
+        <tr>
+            <td>{{ i.id }}</td>
+            <td>{{ i.empleado }}</td>
+            <td>{{ i.tipo }}</td>
+            <td>{{ i.entidad }}</td>
+            <td>{{ i.estado }}</td>
+            <td>
+                <a href="/ver/{{ i.id }}">Ver</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

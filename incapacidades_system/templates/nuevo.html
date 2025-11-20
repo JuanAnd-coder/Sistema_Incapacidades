@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Nueva incapacidad</title>
+</head>
+<body>
+
+<h1>Registrar incapacidad</h1>
+
+<form method="POST" enctype="multipart/form-data">
+
+    <label>Empleado:</label>
+    <input name="empleado" required><br><br>
+
+    <label>Documento:</label>
+    <input name="documento" required><br><br>
+
+    <label>Entidad (EPS/ARL):</label>
+    <input name="entidad" required><br><br>
+
+    <label>Tipo:</label>
+    <select name="tipo">
+        <option>Enfermedad general</option>
+        <option>Accidente laboral</option>
+        <option>Accidente tránsito</option>
+        <option>Maternidad</option>
+        <option>Paternidad</option>
+    </select><br><br>
+
+    <label>Fecha inicio:</label>
+    <input type="date" name="fecha" required><br><br>
+
+    <label>Días:</label>
+    <input type="number" name="dias" required><br><br>
+
+    <label>Documentos:</label>
+    <input type="file" name="archivos" multiple><br><br>
+
+    <button type="submit">Guardar</button>
+</form>
+
+</body>
+</html>
+

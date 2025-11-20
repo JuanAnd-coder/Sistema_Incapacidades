@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Detalle</title>
+</head>
+<body>
+
+<h1>Incapacidad #{{ inc.id }}</h1>
+
+<p><strong>Empleado:</strong> {{ inc.empleado }}</p>
+<p><strong>Documento:</strong> {{ inc.documento }}</p>
+<p><strong>Entidad:</strong> {{ inc.entidad }}</p>
+<p><strong>Tipo:</strong> {{ inc.tipo }}</p>
+<p><strong>Estado:</strong> {{ inc.estado }}</p>
+
+<h2>Documentos</h2>
+<ul>
+    {% for a in inc.archivos %}
+        <li>{{ a.tipo_documento }} → 
+            <a href="/descargar/{{ a.nombre_archivo }}">descargar</a>
+        </li>
+    {% endfor %}
+</ul>
+
+<h2>Documentos faltantes</h2>
+
+{% if faltantes %}
+    <p style="color:red;">{{ faltantes }}</p>
+{% else %}
+    <p style="color:green;">Documentación completa</p>
+{% endif %}
+
+<a href="/transcribir/{{ inc.id }}">Marcar como Transcrita</a>
+<br><br>
+
+<a href="/">Volver</a>
+
+</body>
+</html>
