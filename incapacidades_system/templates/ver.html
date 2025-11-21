@@ -1,39 +1,103 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Detalle</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-<h1>Incapacidad #{{ inc.id }}</h1>
+{% block title %}Detalle de Incapacidad #{{ inc.id }} - Sistema de Incapacidades{% endblock %}
 
-<p><strong>Empleado:</strong> {{ inc.empleado }}</p>
-<p><strong>Documento:</strong> {{ inc.documento }}</p>
-<p><strong>Entidad:</strong> {{ inc.entidad }}</p>
-<p><strong>Tipo:</strong> {{ inc.tipo }}</p>
-<p><strong>Estado:</strong> {{ inc.estado }}</p>
+{% block breadcrumbs %}
+<span>/</span>
+<a href="{{ url_for('incapacidades_list') }}">Incapacidades</a>
+<span>/</span>
+<span>Detalle #{{ inc.id }}</span>
+{% endblock %}
 
-<h2>Documentos</h2>
-<ul>
-    {% for a in inc.archivos %}
-        <li>{{ a.tipo_documento }} → 
-            <a href="/descargar/{{ a.nombre_archivo }}">descargar</a>
-        </li>
-    {% endfor %}
-</ul>
-
-<h2>Documentos faltantes</h2>
-
-{% if faltantes %}
-    <p style="color:red;">{{ faltantes }}</p>
-{% else %}
-    <p style="color:green;">Documentación completa</p>
-{% endif %}
-
-<a href="/transcribir/{{ inc.id }}">Marcar como Transcrita</a>
-<br><br>
-
-<a href="/">Volver</a>
-
-</body>
-</html>
+{% block content %}
+<div class="card">
+    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+        <h2>📄 Detalle de Incapacidad #{{ inc.id }}</h2>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <a href="{{ url_for('incapacidades_list') }}" class="btn" style="background: #6c757d; color: white;">
+                ← Volver a la Lista
+            </a>
+            {% if session.rol in ['Empleado', 'Administrador'] %}
+            <a href="{{ url_for('editar_incapacidad', id=inc.id) }}" class="btn btn-primary">
+                ➕ Agregar Documentos
+            </a>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 30px;">
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+            <h3 style="margin-top: 0; margin-bottom: 15px; color: #667eea;">👤 Información del Empleado</h3>
+            <p><strong>Nombre:</strong> {{ inc.empleado }}</p>
+            <p><strong>Documento:</strong> {{ inc.documento }}</p>
+        </div>
+        
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+            <h3 style="margin-top: 0; margin-bottom: 15px; color: #667eea;">🏥 Información de la Incapacidad</h3>
+            <p><strong>Entidad:</strong> {{ inc.entidad }}</p>
+            <p><strong>Tipo:</strong> {{ inc.tipo }}</p>
+            <p><strong>Fecha Inicio:</strong> {{ inc.fecha_inicio }}</p>
+            <p><strong>Días:</strong> {{ inc.dias }}</p>
+        </div>
+        
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+            <h3 style="margin-top: 0; margin-bottom: 15px; color: #667eea;">📊 Estado</h3>
+            <p>
+                <span style="padding: 8px 15px; border-radius: 20px; font-size: 14px; font-weight: 500; 
+                    {% if inc.estado == 'Transcrita' %}background: #d4edda; color: #155724;
+                    {% elif inc.estado == 'Pendiente' %}background: #fff3cd; color: #856404;
+                    {% else %}background: #f8d7da; color: #721c24;{% endif %}">
+                    {{ inc.estado }}
+                </span>
+            </p>
+            <p><strong>Fecha Registro:</strong> {{ inc.fecha_registro.strftime('%d/%m/%Y %H:%M') if inc.fecha_registro else 'N/A' }}</p>
+        </div>
+    </div>
+    
+    <div style="margin-bottom: 30px;">
+        <h3 style="margin-bottom: 15px;">📎 Documentos Adjuntos</h3>
+        {% if inc.archivos %}
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px;">
+            {% for a in inc.archivos %}
+            <div style="background: white; border: 2px solid #e0e0e0; padding: 15px; border-radius: 8px; display: flex; align-items: center; gap: 10px;">
+                <span style="font-size: 24px;">📄</span>
+                <div style="flex: 1;">
+                    <div style="font-weight: 500; margin-bottom: 5px;">{{ a.tipo_documento }}</div>
+                    <div style="font-size: 12px; color: #666;">{{ a.nombre_archivo }}</div>
+                </div>
+                <a href="/descargar/{{ a.nombre_archivo }}" class="btn" style="background: #667eea; color: white; padding: 8px 15px; font-size: 12px; text-decoration: none;">
+                    ⬇️ Descargar
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p style="color: #666; padding: 20px; background: #f8f9fa; border-radius: 5px;">No hay documentos adjuntos</p>
+        {% endif %}
+    </div>
+    
+    {% if faltantes %}
+    <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+        <h3 style="margin-top: 0; color: #856404;">⚠️ Documentos Faltantes</h3>
+        <ul style="margin: 10px 0; padding-left: 20px; color: #856404;">
+            {% for doc in faltantes %}
+            <li>{{ doc }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% else %}
+    <div style="background: #d4edda; border-left: 4px solid #28a745; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+        <p style="margin: 0; color: #155724; font-weight: 500;">✅ Documentación completa</p>
+    </div>
+    {% endif %}
+    
+    {% if session.rol in ['Revisor', 'Administrador'] %}
+    <div style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #f0f0f0;">
+        <a href="/transcribir/{{ inc.id }}" class="btn" style="background: #28a745; color: white;" 
+           onclick="return confirm('¿Deseas marcar esta incapacidad como Transcrita?');">
+            ✅ Marcar como Transcrita
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

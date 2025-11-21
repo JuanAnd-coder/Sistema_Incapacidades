@@ -1,0 +1,237 @@
+{% extends "base.html" %}
+
+{% block title %}Agregar Documentos - Incapacidad #{{ inc.id }}{% endblock %}
+
+{% block breadcrumbs %}
+<span>/</span>
+<a href="{{ url_for('incapacidades_list') }}">Incapacidades</a>
+<span>/</span>
+<a href="{{ url_for('ver_incapacidad', id=inc.id) }}">Detalle #{{ inc.id }}</a>
+<span>/</span>
+<span>Agregar Documentos</span>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .info-section {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 25px;
+        border-left: 4px solid #667eea;
+    }
+    
+    .info-section h3 {
+        margin-top: 0;
+        margin-bottom: 15px;
+        color: #333;
+    }
+    
+    .info-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-bottom: 10px;
+    }
+    
+    .info-row strong {
+        color: #667eea;
+    }
+    
+    .documentos-section {
+        background: #fff;
+        border: 2px solid #e0e0e0;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 25px;
+    }
+    
+    .documento-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px;
+        background: #f8f9fa;
+        border-radius: 5px;
+        margin-bottom: 8px;
+    }
+    
+    .documento-faltante {
+        background: #fff3cd;
+        border-left: 3px solid #ffc107;
+    }
+    
+    .documento-presente {
+        background: #d4edda;
+        border-left: 3px solid #28a745;
+    }
+    
+    .file-upload-area {
+        border: 2px dashed #667eea;
+        border-radius: 8px;
+        padding: 30px;
+        text-align: center;
+        background: #f8f9ff;
+        transition: all 0.3s;
+        cursor: pointer;
+        margin-bottom: 20px;
+    }
+    
+    .file-upload-area:hover {
+        background: #f0f2ff;
+        border-color: #5568d3;
+    }
+    
+    .file-upload-area input[type="file"] {
+        display: none;
+    }
+    
+    .file-upload-label {
+        cursor: pointer;
+        display: block;
+    }
+    
+    .file-upload-icon {
+        font-size: 48px;
+        margin-bottom: 10px;
+    }
+    
+    .file-upload-text {
+        color: #667eea;
+        font-weight: 500;
+        margin-bottom: 5px;
+    }
+    
+    .file-upload-hint {
+        color: #999;
+        font-size: 12px;
+    }
+    
+    .file-list {
+        margin-top: 15px;
+        text-align: left;
+    }
+    
+    .file-item {
+        background: white;
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 14px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+        <h2>📎 Agregar Documentos - Incapacidad #{{ inc.id }}</h2>
+        <a href="{{ url_for('ver_incapacidad', id=inc.id) }}" class="btn" style="background: #6c757d; color: white;">
+            ← Volver al Detalle
+        </a>
+    </div>
+    
+    <!-- Información de la incapacidad -->
+    <div class="info-section">
+        <h3>📋 Información de la Incapacidad</h3>
+        <div class="info-row">
+            <div><strong>Empleado:</strong> {{ inc.empleado }}</div>
+            <div><strong>Documento:</strong> {{ inc.documento }}</div>
+            <div><strong>Tipo:</strong> {{ inc.tipo }}</div>
+            <div><strong>Estado:</strong> 
+                <span style="padding: 5px 10px; border-radius: 15px; font-size: 12px; 
+                    {% if inc.estado == 'Transcrita' %}background: #d4edda; color: #155724;
+                    {% elif inc.estado == 'Pendiente' %}background: #fff3cd; color: #856404;
+                    {% else %}background: #f8d7da; color: #721c24;{% endif %}">
+                    {{ inc.estado }}
+                </span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Documentos actuales y faltantes -->
+    <div class="documentos-section">
+        <h3 style="margin-top: 0; margin-bottom: 15px;">📄 Estado de Documentos</h3>
+        
+        {% if docs_presentes %}
+        <div style="margin-bottom: 20px;">
+            <strong style="color: #28a745;">✅ Documentos Presentes:</strong>
+            {% for doc in docs_presentes %}
+            <div class="documento-item documento-presente">
+                <span>✅ {{ doc }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        {% if faltantes %}
+        <div>
+            <strong style="color: #ffc107;">⚠️ Documentos Faltantes:</strong>
+            {% for doc in faltantes %}
+            <div class="documento-item documento-faltante">
+                <span>⚠️ {{ doc }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div style="background: #d4edda; padding: 15px; border-radius: 5px; color: #155724;">
+            ✅ Todos los documentos requeridos están presentes
+        </div>
+        {% endif %}
+    </div>
+    
+    <!-- Formulario para agregar documentos -->
+    <form method="POST" enctype="multipart/form-data" action="{{ url_for('editar_incapacidad', id=inc.id) }}">
+        <h3 style="margin-bottom: 15px;">➕ Agregar Nuevos Documentos</h3>
+        
+        <div class="file-upload-area" onclick="document.getElementById('archivos').click()">
+            <input type="file" id="archivos" name="archivos" multiple 
+                   accept=".pdf,.jpg,.jpeg,.png" onchange="mostrarArchivos()">
+            <label for="archivos" class="file-upload-label">
+                <div class="file-upload-icon">📁</div>
+                <div class="file-upload-text">Haz clic para seleccionar archivos</div>
+                <div class="file-upload-hint">Formatos permitidos: PDF, JPG, JPEG, PNG</div>
+            </label>
+        </div>
+        <div id="fileList" class="file-list"></div>
+        
+        <div style="display: flex; gap: 15px; margin-top: 30px; justify-content: center; flex-wrap: wrap;">
+            <button type="submit" class="btn btn-primary" style="padding: 12px 30px; font-size: 16px;">
+                ✅ Agregar Documentos
+            </button>
+            <a href="{{ url_for('ver_incapacidad', id=inc.id) }}" class="btn" 
+               style="background: #6c757d; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; font-size: 16px;">
+                Cancelar
+            </a>
+        </div>
+    </form>
+</div>
+
+<script>
+    function mostrarArchivos() {
+        const input = document.getElementById("archivos");
+        const fileList = document.getElementById("fileList");
+        const files = input.files;
+        
+        if (files.length > 0) {
+            let html = '<strong>Archivos seleccionados:</strong><br>';
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const size = (file.size / 1024).toFixed(2);
+                html += `<div class="file-item">
+                    <span>📄</span>
+                    <span style="flex: 1;">${file.name}</span>
+                    <span style="color: #666;">${size} KB</span>
+                </div>`;
+            }
+            fileList.innerHTML = html;
+        } else {
+            fileList.innerHTML = '';
+        }
+    }
+</script>
+{% endblock %}
+

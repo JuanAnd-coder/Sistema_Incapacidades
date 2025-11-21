@@ -35,12 +35,22 @@ class MedicoController:
     @staticmethod
     def crear_medico():
         data = request.json
+        if not data:
+            return jsonify({"error": "JSON vacío o inválido"}), 400
+        
+        campos_obligatorios = ["nombre", "especialidad", "licencia"]
+        faltantes = [c for c in campos_obligatorios if c not in data or not data[c]]
+        if faltantes:
+            return jsonify({"error": f"Faltan datos obligatorios: {faltantes}"}), 400
 
-        nuevo_id = Medico.crear(data)
-        return jsonify({
-            "mensaje": "Médico creado exitosamente",
-            "id_medico": nuevo_id
-        }), 201
+        try:
+            nuevo_id = Medico.crear(data)
+            return jsonify({
+                "mensaje": "Médico creado exitosamente",
+                "id_medico": nuevo_id
+            }), 201
+        except Exception as e:
+            return jsonify({"error": f"Error al crear médico: {str(e)}"}), 500
 
     @staticmethod
     def actualizar_medico(id_medico):

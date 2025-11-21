@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard Médico - Sistema de Incapacidades{% endblock %}
+
+{% block breadcrumbs %}
+<span>/</span>
+<span>Dashboard</span>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2>👨‍⚕️ Panel de Médico</h2>
+    </div>
+    
+    <p>Bienvenido, <strong>{{ session.nombre }}</strong>. Puedes gestionar información médica de incapacidades.</p>
+    
+    <h3 style="margin-top: 30px; margin-bottom: 15px;">Funcionalidades disponibles:</h3>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 20px;">
+        <div style="padding: 20px; background: #f8f9fa; border-radius: 8px;">
+            <h4>📋 Ver Incapacidades Asignadas</h4>
+            <p style="margin-top: 10px; color: #666;">Ver incapacidades que requieren tu revisión médica</p>
+            <a href="{{ url_for('incapacidades_list') }}" class="btn btn-primary" style="margin-top: 10px;">Ver Incapacidades</a>
+        </div>
+        
+        <div style="padding: 20px; background: #f8f9fa; border-radius: 8px;">
+            <h4>📝 Validar Documentos Médicos</h4>
+            <p style="margin-top: 10px; color: #666;">Validar documentos médicos de incapacidades registradas por empleados</p>
+            <a href="{{ url_for('incapacidades_list') }}" class="btn btn-primary" style="margin-top: 10px;">Validar Documentos</a>
+        </div>
+        
+        <div style="padding: 20px; background: #f8f9fa; border-radius: 8px;">
+            <h4>💊 Emitir Certificados</h4>
+            <p style="margin-top: 10px; color: #666;">Emitir certificados médicos para incapacidades</p>
+            <a href="#" class="btn btn-primary" style="margin-top: 10px;">Emitir Certificado</a>
+        </div>
+        
+        <div style="padding: 20px; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 8px; margin-top: 20px;">
+            <h4>ℹ️ Nota Importante</h4>
+            <p style="margin-top: 10px; color: #856404;">
+                <strong>Tu función es validar documentos médicos</strong> de las incapacidades que los empleados registran. 
+                No puedes registrar nuevas incapacidades, solo revisar y validar las existentes.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

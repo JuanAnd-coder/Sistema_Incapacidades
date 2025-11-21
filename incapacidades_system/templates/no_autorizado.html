@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Acceso No Autorizado{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2>🚫 Acceso No Autorizado</h2>
+    </div>
+    
+    <div style="text-align: center; padding: 40px;">
+        <h3 style="color: #c33; margin-bottom: 20px;">No tienes permisos para acceder a esta página</h3>
+        <p style="color: #666; margin-bottom: 30px;">
+            Tu rol actual: <strong>{{ session.rol }}</strong><br>
+            Esta funcionalidad requiere permisos adicionales.
+        </p>
+        <a href="/" class="btn btn-primary">Volver al Inicio</a>
+    </div>
+</div>
+{% endblock %}
+

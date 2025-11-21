@@ -1,35 +1,72 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Incapacidades</title>
-</head>
-<body>
-    <h1>Listado de incapacidades</h1>
+{% extends "base.html" %}
 
-    <a href="/nuevo">Registrar nueva incapacidad</a>
+{% block title %}Incapacidades - Sistema de Gestión{% endblock %}
 
-    <table border="1" cellpadding="8">
-        <tr>
-            <th>ID</th>
-            <th>Empleado</th>
-            <th>Tipo</th>
-            <th>Entidad</th>
-            <th>Estado</th>
-            <th>Acciones</th>
-        </tr>
+{% block breadcrumbs %}
+<span>/</span>
+<span>Incapacidades</span>
+{% endblock %}
 
-        {% for i in incapacidades %}
-        <tr>
-            <td>{{ i.id }}</td>
-            <td>{{ i.empleado }}</td>
-            <td>{{ i.tipo }}</td>
-            <td>{{ i.entidad }}</td>
-            <td>{{ i.estado }}</td>
-            <td>
-                <a href="/ver/{{ i.id }}">Ver</a>
-            </td>
-        </tr>
-        {% endfor %}
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2>📋 Listado de Incapacidades</h2>
+    </div>
+    
+    <div style="margin-bottom: 20px;">
+            <a href="/nuevo" class="btn btn-primary">➕ Registrar Nueva Incapacidad</a>
+    </div>
+
+    {% if incapacidades %}
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Empleado</th>
+                <th>Documento</th>
+                <th>Tipo</th>
+                <th>Entidad</th>
+                <th>Fecha Inicio</th>
+                <th>Días</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in incapacidades %}
+            <tr>
+                <td>{{ i.id }}</td>
+                <td>{{ i.empleado }}</td>
+                <td>{{ i.documento }}</td>
+                <td>{{ i.tipo }}</td>
+                <td>{{ i.entidad }}</td>
+                <td>{{ i.fecha_inicio }}</td>
+                <td>{{ i.dias }}</td>
+                <td>
+                    <span style="padding: 5px 10px; border-radius: 15px; font-size: 12px; 
+                        {% if i.estado == 'Transcrita' %}background: #d4edda; color: #155724;
+                        {% elif i.estado == 'Pendiente' %}background: #fff3cd; color: #856404;
+                        {% else %}background: #f8d7da; color: #721c24;{% endif %}">
+                        {{ i.estado }}
+                    </span>
+                </td>
+                <td>
+                    <a href="/ver/{{ i.id }}" class="btn" style="background: #667eea; color: white; padding: 5px 15px; font-size: 12px;">Ver</a>
+                    {% if session.rol in ['Empleado', 'Administrador'] %}
+                    <a href="{{ url_for('editar_incapacidad', id=i.id) }}" class="btn" style="background: #17a2b8; color: white; padding: 5px 15px; font-size: 12px; margin-left: 5px; text-decoration: none;">➕ Docs</a>
+                    {% endif %}
+                    {% if session.rol in ['Revisor', 'Administrador'] %}
+                    <a href="/transcribir/{{ i.id }}" class="btn" style="background: #28a745; color: white; padding: 5px 15px; font-size: 12px; margin-left: 5px; text-decoration: none;">✅ Transcribir</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
-</body>
-</html>
+    {% else %}
+    <p style="text-align: center; padding: 40px; color: #666;">
+        No hay incapacidades registradas aún.
+    </p>
+    {% endif %}
+</div>
+{% endblock %}

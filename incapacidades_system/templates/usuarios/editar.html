@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Usuario - Sistema de Incapacidades{% endblock %}
+
+{% block breadcrumbs %}
+<span>/</span>
+<a href="{{ url_for('admin.dashboard') }}">Dashboard</a>
+<span>/</span>
+<a href="{{ url_for('usuario.listar') }}">Usuarios</a>
+<span>/</span>
+<span>Editar Usuario</span>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2>✏️ Editar Usuario</h2>
+    </div>
+    
+    <form method="POST" action="{{ url_for('usuario.editar', usuario_id=usuario.id_usuario) }}" style="max-width: 600px;">
+        <div style="margin-bottom: 20px;">
+            <label for="nombre" style="display: block; margin-bottom: 8px; font-weight: 500;">
+                Nombre Completo: <span style="color: red;">*</span>
+            </label>
+            <input type="text" id="nombre" name="nombre" required 
+                   value="{{ usuario.nombre }}"
+                   style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 16px;"
+                   placeholder="Ej: Juan Pérez">
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+            <label for="correo" style="display: block; margin-bottom: 8px; font-weight: 500;">
+                Correo Electrónico: <span style="color: red;">*</span>
+            </label>
+            <input type="email" id="correo" name="correo" required 
+                   value="{{ usuario.correo }}"
+                   style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 16px;"
+                   placeholder="Ej: usuario@empresa.com">
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+            <label for="rol" style="display: block; margin-bottom: 8px; font-weight: 500;">
+                Rol: <span style="color: red;">*</span>
+            </label>
+            <select id="rol" name="rol" required 
+                    style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 16px;">
+                <option value="">Seleccione un rol</option>
+                <option value="Administrador" {% if usuario.rol == 'Administrador' %}selected{% endif %}>👨‍💼 Administrador</option>
+                <option value="Empleado" {% if usuario.rol == 'Empleado' %}selected{% endif %}>👤 Empleado</option>
+                <option value="Revisor" {% if usuario.rol == 'Revisor' %}selected{% endif %}>✅ Revisor</option>
+                <option value="Médico" {% if usuario.rol == 'Médico' %}selected{% endif %}>👨‍⚕️ Médico</option>
+            </select>
+            <small style="color: #666; font-size: 12px;">
+                El rol determina los permisos del usuario en el sistema
+            </small>
+        </div>
+        
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+            <p style="margin: 0; color: #666; font-size: 14px;">
+                <strong>Nota:</strong> Para cambiar la contraseña, el usuario debe hacerlo desde su perfil o puedes eliminarlo y crear uno nuevo.
+            </p>
+        </div>
+        
+        <div style="display: flex; gap: 10px; margin-top: 30px;">
+            <button type="submit" class="btn btn-primary" style="flex: 1;">
+                💾 Guardar Cambios
+            </button>
+            <a href="{{ url_for('usuario.listar') }}" class="btn" 
+               style="background: #6c757d; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
+                Cancelar
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+

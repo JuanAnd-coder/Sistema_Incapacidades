@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Mi Historial de Incapacidades - Sistema de Incapacidades{% endblock %}
+
+{% block breadcrumbs %}
+<span>/</span>
+{% if session.rol == 'Empleado' %}
+<a href="{{ url_for('empleado.dashboard') }}">Dashboard</a>
+{% else %}
+<a href="{{ url_for('admin.dashboard') }}">Dashboard</a>
+{% endif %}
+<span>/</span>
+<span>Historial</span>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+        <h2>📋 Mi Historial de Incapacidades</h2>
+        <a href="{{ url_for('incapacidades_list') }}" class="btn" style="background: #6c757d; color: white;">
+            ← Volver a Incapacidades
+        </a>
+    </div>
+    
+    {% if incapacidades %}
+    <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+            <thead>
+                <tr style="background: #667eea; color: white;">
+                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">ID</th>
+                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Empleado</th>
+                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Tipo</th>
+                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Fecha Inicio</th>
+                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Días</th>
+                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Estado</th>
+                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Fecha Registro</th>
+                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for inc in incapacidades %}
+                <tr style="border-bottom: 1px solid #ddd;">
+                    <td style="padding: 12px; border: 1px solid #ddd;">#{{ inc.id }}</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">{{ inc.empleado }}</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">{{ inc.tipo }}</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">{{ inc.fecha_inicio.strftime('%d/%m/%Y') if inc.fecha_inicio else 'N/A' }}</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">{{ inc.dias }} días</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">
+                        <span style="padding: 5px 12px; border-radius: 15px; font-size: 12px; font-weight: 500; 
+                            {% if inc.estado == 'Transcrita' %}background: #d4edda; color: #155724;
+                            {% elif inc.estado == 'Pendiente' %}background: #fff3cd; color: #856404;
+                            {% else %}background: #f8d7da; color: #721c24;{% endif %}">
+                            {{ inc.estado }}
+                        </span>
+                    </td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">
+                        {{ inc.fecha_registro.strftime('%d/%m/%Y %H:%M') if inc.fecha_registro else 'N/A' }}
+                    </td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">
+                        <a href="{{ url_for('ver_incapacidad', id=inc.id) }}" class="btn" 
+                           style="background: #667eea; color: white; padding: 5px 15px; font-size: 12px; text-decoration: none;">
+                            Ver Detalle
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 5px;">
+        <p style="margin: 0; color: #666;">
+            <strong>Total de incapacidades:</strong> {{ incapacidades|length }}
+        </p>
+    </div>
+    {% else %}
+    <div style="padding: 40px; text-align: center; background: #f8f9fa; border-radius: 8px; margin-top: 20px;">
+        <div style="font-size: 48px; margin-bottom: 15px;">📭</div>
+        <h3 style="color: #666; margin-bottom: 10px;">No hay incapacidades registradas</h3>
+        <p style="color: #999; margin-bottom: 20px;">Aún no has registrado ninguna incapacidad.</p>
+        <a href="/nuevo" class="btn btn-primary">➕ Registrar Nueva Incapacidad</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+

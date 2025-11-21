@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard Empleado - Sistema de Incapacidades{% endblock %}
+
+{% block breadcrumbs %}
+<span>/</span>
+<span>Dashboard</span>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2>👤 Panel de Empleado</h2>
+    </div>
+    
+    <p>Bienvenido, <strong>{{ session.nombre }}</strong>. Puedes gestionar tus incapacidades.</p>
+    
+    <h3 style="margin-top: 30px; margin-bottom: 15px;">Funcionalidades disponibles:</h3>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 20px;">
+        <div style="padding: 20px; background: #d4edda; border-left: 4px solid #28a745; border-radius: 8px;">
+            <h4>➕ Registrar Nueva Incapacidad</h4>
+            <p style="margin-top: 10px; color: #155724;">
+                <strong>Registra tu incapacidad aquí</strong> si tuviste un accidente, enfermedad o necesitas licencia médica. 
+                Sube los documentos requeridos según el tipo de incapacidad.
+            </p>
+            <a href="/nuevo" class="btn btn-primary" style="margin-top: 10px;">Registrar Mi Incapacidad</a>
+        </div>
+        
+        <div style="padding: 20px; background: #f8f9fa; border-radius: 8px;">
+            <h4>📋 Mis Incapacidades</h4>
+            <p style="margin-top: 10px; color: #666;">Ver el estado de tus incapacidades registradas</p>
+            <a href="{{ url_for('incapacidades_list') }}" class="btn btn-primary" style="margin-top: 10px;">Ver Mis Incapacidades</a>
+        </div>
+        
+        <div style="padding: 20px; background: #f8f9fa; border-radius: 8px;">
+            <h4>📄 Historial</h4>
+            <p style="margin-top: 10px; color: #666;">Consulta tu historial de incapacidades</p>
+            <a href="/historial" class="btn btn-primary" style="margin-top: 10px;">Ver Historial</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

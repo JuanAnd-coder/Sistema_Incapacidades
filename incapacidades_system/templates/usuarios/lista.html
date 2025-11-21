@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Gestión de Usuarios - Sistema de Incapacidades{% endblock %}
+
+{% block breadcrumbs %}
+<span>/</span>
+<a href="{{ url_for('admin.dashboard') }}">Dashboard</a>
+<span>/</span>
+<span>Usuarios</span>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+        <h2 style="margin: 0;">👥 Gestión de Usuarios</h2>
+        <a href="{{ url_for('usuario.crear') }}" class="btn btn-primary" style="white-space: nowrap;">➕ Crear Nuevo Usuario</a>
+    </div>
+    
+    {% if usuarios %}
+    <div style="overflow-x: auto;">
+        <table style="min-width: 100%;">
+            <thead>
+                <tr>
+                    <th style="width: 60px;">ID</th>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th style="width: 150px;">Rol</th>
+                    <th style="width: 200px; text-align: center;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for usuario in usuarios %}
+                <tr>
+                    <td><strong>#{{ usuario.id_usuario }}</strong></td>
+                    <td>{{ usuario.nombre }}</td>
+                    <td>{{ usuario.correo }}</td>
+                    <td>
+                        <span style="display: inline-block; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 500; 
+                            {% if usuario.rol == 'Administrador' %}background: #d4edda; color: #155724; border: 1px solid #c3e6cb;
+                            {% elif usuario.rol == 'Empleado' %}background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb;
+                            {% elif usuario.rol == 'Revisor' %}background: #fff3cd; color: #856404; border: 1px solid #ffeaa7;
+                            {% elif usuario.rol == 'Médico' %}background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb;
+                            {% else %}background: #e2e3e5; color: #383d41; border: 1px solid #d6d8db;{% endif %}">
+                            {{ usuario.rol }}
+                        </span>
+                    </td>
+                    <td style="text-align: center;">
+                        <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+                            <a href="{{ url_for('usuario.editar', usuario_id=usuario.id_usuario) }}" 
+                               class="btn" style="background: #667eea; color: white; padding: 6px 12px; font-size: 12px; text-decoration: none; border-radius: 4px; transition: all 0.3s;"
+                               onmouseover="this.style.background='#5568d3'; this.style.transform='translateY(-1px)'"
+                               onmouseout="this.style.background='#667eea'; this.style.transform='translateY(0)'">
+                                ✏️ Editar
+                            </a>
+                            <form method="POST" action="{{ url_for('usuario.eliminar', usuario_id=usuario.id_usuario) }}" 
+                                  style="display: inline; margin: 0;" 
+                                  onsubmit="return confirm('¿Estás seguro de que deseas eliminar el usuario {{ usuario.nombre }}?');">
+                                <button type="submit" class="btn" style="background: #dc3545; color: white; padding: 6px 12px; font-size: 12px; border: none; border-radius: 4px; cursor: pointer; transition: all 0.3s;"
+                                        onmouseover="this.style.background='#c82333'; this.style.transform='translateY(-1px)'"
+                                        onmouseout="this.style.background='#dc3545'; this.style.transform='translateY(0)'">
+                                    🗑️ Eliminar
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <div style="margin-top: 20px; padding-top: 20px; border-top: 2px solid #f0f0f0; color: #666; font-size: 14px;">
+        <strong>Total de usuarios:</strong> {{ usuarios|length }}
+    </div>
+    {% else %}
+    <div style="text-align: center; padding: 60px 20px;">
+        <div style="font-size: 48px; margin-bottom: 20px;">👥</div>
+        <h3 style="color: #666; margin-bottom: 10px;">No hay usuarios registrados</h3>
+        <p style="color: #999; margin-bottom: 30px;">Comienza creando el primer usuario del sistema</p>
+        <a href="{{ url_for('usuario.crear') }}" class="btn btn-primary" style="padding: 12px 30px; font-size: 16px;">
+            ➕ Crear Primer Usuario
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+

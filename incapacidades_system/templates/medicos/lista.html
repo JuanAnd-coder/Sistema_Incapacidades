@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Gestión de Médicos - Sistema de Incapacidades{% endblock %}
+
+{% block breadcrumbs %}
+<span>/</span>
+<a href="{{ url_for('admin.dashboard') }}">Dashboard</a>
+<span>/</span>
+<span>Médicos</span>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+        <h2 style="margin: 0;">👨‍⚕️ Gestión de Médicos</h2>
+        <a href="{{ url_for('medico.crear') }}" class="btn btn-primary" style="white-space: nowrap;">➕ Crear Nuevo Médico</a>
+    </div>
+    
+    {% if medicos %}
+    <div style="overflow-x: auto;">
+        <table style="min-width: 100%;">
+            <thead>
+                <tr>
+                    <th style="width: 60px;">ID</th>
+                    <th>Nombre</th>
+                    <th>Especialidad</th>
+                    <th style="width: 150px;">Licencia</th>
+                    <th style="width: 200px; text-align: center;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for medico in medicos %}
+                <tr>
+                    <td><strong>#{{ medico.id_medico }}</strong></td>
+                    <td>{{ medico.nombre }}</td>
+                    <td>{{ medico.especialidad }}</td>
+                    <td>{{ medico.licencia }}</td>
+                    <td style="text-align: center;">
+                        <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+                            <a href="{{ url_for('medico.editar', id_medico=medico.id_medico) }}" 
+                               class="btn" style="background: #667eea; color: white; padding: 6px 12px; font-size: 12px; text-decoration: none; border-radius: 4px; transition: all 0.3s;"
+                               onmouseover="this.style.background='#5568d3'; this.style.transform='translateY(-1px)'"
+                               onmouseout="this.style.background='#667eea'; this.style.transform='translateY(0)'">
+                                ✏️ Editar
+                            </a>
+                            <form method="POST" action="{{ url_for('medico.eliminar', id_medico=medico.id_medico) }}" 
+                                  style="display: inline; margin: 0;" 
+                                  onsubmit="return confirm('¿Estás seguro de que deseas eliminar el médico {{ medico.nombre }}?');">
+                                <button type="submit" class="btn" style="background: #dc3545; color: white; padding: 6px 12px; font-size: 12px; border: none; border-radius: 4px; cursor: pointer; transition: all 0.3s;"
+                                        onmouseover="this.style.background='#c82333'; this.style.transform='translateY(-1px)'"
+                                        onmouseout="this.style.background='#dc3545'; this.style.transform='translateY(0)'">
+                                    🗑️ Eliminar
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <div style="margin-top: 20px; padding-top: 20px; border-top: 2px solid #f0f0f0; color: #666; font-size: 14px;">
+        <strong>Total de médicos:</strong> {{ medicos|length }}
+    </div>
+    {% else %}
+    <div style="text-align: center; padding: 60px 20px;">
+        <div style="font-size: 48px; margin-bottom: 20px;">👨‍⚕️</div>
+        <h3 style="color: #666; margin-bottom: 10px;">No hay médicos registrados</h3>
+        <p style="color: #999; margin-bottom: 30px;">Comienza creando el primer médico del sistema</p>
+        <a href="{{ url_for('medico.crear') }}" class="btn btn-primary" style="padding: 12px 30px; font-size: 16px;">
+            ➕ Crear Primer Médico
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+

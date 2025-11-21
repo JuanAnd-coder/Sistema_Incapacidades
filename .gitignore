@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+
+# Base de datos
+*.db
+*.sqlite
+*.sqlite3
+
+# Firebase - NO SUBIR CREDENCIALES
+config/firebase-credentials.json
+*.json
+!package.json
+!package-lock.json
+
+# Variables de entorno
+.env
+.env.local
+
+# Uploads
+uploads/
+*.pdf
+*.jpg
+*.jpeg
+*.png
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+

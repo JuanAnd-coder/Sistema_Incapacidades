@@ -1,5 +1,5 @@
 from config.db import db
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 
 class Usuario(db.Model):
     __tablename__ = "usuarios"
@@ -10,11 +10,25 @@ class Usuario(db.Model):
     password = db.Column(db.String(255), nullable=False)
     rol = db.Column(db.String(50), nullable=False)
 
+    @property
+    def id(self):
+        """Alias para compatibilidad con código existente"""
+        return self.id_usuario
+    
+    @property
+    def contrasena(self):
+        """Alias para compatibilidad con código existente"""
+        return self.password
+
     def __init__(self, nombre, correo, password, rol):
         self.nombre = nombre
         self.correo = correo
         self.password = generate_password_hash(password)
         self.rol = rol
+    
+    def verificar_password(self, password):
+        """Verifica si la contraseña es correcta"""
+        return check_password_hash(self.password, password)
 
     # Obtener todos
     @staticmethod

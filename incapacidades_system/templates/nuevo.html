@@ -1,44 +1,351 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Nueva incapacidad</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-<h1>Registrar incapacidad</h1>
+{% block title %}Registrar Nueva Incapacidad - Sistema de Incapacidades{% endblock %}
 
-<form method="POST" enctype="multipart/form-data">
+{% block breadcrumbs %}
+<span>/</span>
+<a href="{{ url_for('incapacidades_list') }}">Incapacidades</a>
+<span>/</span>
+<span>Nueva Incapacidad</span>
+{% endblock %}
 
-    <label>Empleado:</label>
-    <input name="empleado" required><br><br>
+{% block extra_css %}
+<style>
+    .form-section {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 25px;
+        border-left: 4px solid #667eea;
+    }
+    
+    .form-section h3 {
+        margin-top: 0;
+        margin-bottom: 20px;
+        color: #333;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .form-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        color: #333;
+    }
+    
+    .form-group label .required {
+        color: #dc3545;
+        margin-left: 3px;
+    }
+    
+    .form-group input[type="text"],
+    .form-group input[type="number"],
+    .form-group input[type="date"],
+    .form-group select {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #e0e0e0;
+        border-radius: 5px;
+        font-size: 16px;
+        transition: all 0.3s;
+        font-family: inherit;
+    }
+    
+    .form-group input:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    .form-group small {
+        display: block;
+        margin-top: 5px;
+        color: #666;
+        font-size: 12px;
+    }
+    
+    .file-upload-area {
+        border: 2px dashed #667eea;
+        border-radius: 8px;
+        padding: 30px;
+        text-align: center;
+        background: #f8f9ff;
+        transition: all 0.3s;
+        cursor: pointer;
+    }
+    
+    .file-upload-area:hover {
+        background: #f0f2ff;
+        border-color: #5568d3;
+    }
+    
+    .file-upload-area input[type="file"] {
+        display: none;
+    }
+    
+    .file-upload-label {
+        cursor: pointer;
+        display: block;
+    }
+    
+    .file-upload-icon {
+        font-size: 48px;
+        margin-bottom: 10px;
+    }
+    
+    .file-upload-text {
+        color: #667eea;
+        font-weight: 500;
+        margin-bottom: 5px;
+    }
+    
+    .file-upload-hint {
+        color: #999;
+        font-size: 12px;
+    }
+    
+    .file-list {
+        margin-top: 15px;
+        text-align: left;
+    }
+    
+    .file-item {
+        background: white;
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 14px;
+    }
+    
+    .btn-submit {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 15px 40px;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+    
+    .btn-submit:active {
+        transform: translateY(0);
+    }
+    
+    .info-box {
+        background: #e7f3ff;
+        border-left: 4px solid #2196F3;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 25px;
+    }
+    
+    .info-box p {
+        margin: 0;
+        color: #0c5460;
+        font-size: 14px;
+    }
+</style>
+{% endblock %}
 
-    <label>Documento:</label>
-    <input name="documento" required><br><br>
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2>📝 Registrar Nueva Incapacidad</h2>
+    </div>
+    
+        <div class="info-box">
+        <p><strong>⚠️ IMPORTANTE:</strong> Debes subir al menos uno de estos documentos obligatorios:</p>
+        <ul style="margin: 10px 0 0 20px; padding: 0;">
+            <li><strong>Soporte incapacidad</strong> - El nombre del archivo debe contener: "incapacidad", "soporte" o "incap"</li>
+            <li><strong>Epicrisis</strong> - El nombre del archivo debe contener: "epicrisis" o "epic"</li>
+        </ul>
+        <p style="margin-top: 10px; margin-bottom: 0;"><strong>Nota:</strong> El sistema identifica el tipo de documento por el nombre del archivo.</p>
+    </div>
+    
+    <form method="POST" enctype="multipart/form-data" id="incapacidadForm">
+        <!-- Sección: Información del Empleado -->
+        <div class="form-section">
+            <h3>👤 Información del Empleado</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="empleado">
+                        Nombre del Empleado
+                        <span class="required">*</span>
+                    </label>
+                    <input type="text" id="empleado" name="empleado" required 
+                           placeholder="Ej: Juan Pérez">
+                </div>
+                
+                <div class="form-group">
+                    <label for="documento">
+                        Número de Documento
+                        <span class="required">*</span>
+                    </label>
+                    <input type="text" id="documento" name="documento" required 
+                           placeholder="Ej: 1234567890">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sección: Información de la Incapacidad -->
+        <div class="form-section">
+            <h3>🏥 Información de la Incapacidad</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="entidad">
+                        Entidad (EPS/ARL)
+                        <span class="required">*</span>
+                    </label>
+                    <input type="text" id="entidad" name="entidad" required 
+                           placeholder="Ej: EPS Sura, ARL Positiva">
+                </div>
+                
+                <div class="form-group">
+                    <label for="tipo">
+                        Tipo de Incapacidad
+                        <span class="required">*</span>
+                    </label>
+                    <select id="tipo" name="tipo" required onchange="mostrarDocumentosRequeridos()">
+                        <option value="">Seleccione un tipo</option>
+                        <option value="Enfermedad general">Enfermedad general</option>
+                        <option value="Accidente laboral">Accidente laboral</option>
+                        <option value="Accidente tránsito">Accidente de tránsito</option>
+                        <option value="Maternidad">Maternidad</option>
+                        <option value="Paternidad">Paternidad</option>
+                    </select>
+                    <small id="documentosInfo" style="display: none; margin-top: 10px; padding: 10px; background: #fff3cd; border-radius: 5px; color: #856404;"></small>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="fecha">
+                        Fecha de Inicio
+                        <span class="required">*</span>
+                    </label>
+                    <input type="date" id="fecha" name="fecha" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="dias">
+                        Días de Incapacidad
+                        <span class="required">*</span>
+                    </label>
+                    <input type="number" id="dias" name="dias" required min="1" 
+                           placeholder="Ej: 5">
+                    <small>Número de días de incapacidad</small>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sección: Documentos -->
+        <div class="form-section">
+            <h3>📎 Documentos Adjuntos</h3>
+            <div class="form-group">
+                <label>Subir Documentos</label>
+                <div class="file-upload-area" onclick="document.getElementById('archivos').click()">
+                    <input type="file" id="archivos" name="archivos" multiple 
+                           accept=".pdf,.jpg,.jpeg,.png" onchange="mostrarArchivos()">
+                    <label for="archivos" class="file-upload-label">
+                        <div class="file-upload-icon">📁</div>
+                        <div class="file-upload-text">Haz clic para seleccionar archivos</div>
+                        <div class="file-upload-hint">Formatos permitidos: PDF, JPG, JPEG, PNG</div>
+                    </label>
+                </div>
+                <div id="fileList" class="file-list"></div>
+            </div>
+        </div>
+        
+        <!-- Botones de acción -->
+        <div style="display: flex; gap: 15px; margin-top: 30px; justify-content: center; flex-wrap: wrap;">
+            <button type="submit" class="btn-submit">
+                ✅ Registrar Incapacidad
+            </button>
+            <a href="{{ url_for('incapacidades_list') }}" class="btn" 
+               style="background: #6c757d; color: white; padding: 15px 40px; text-decoration: none; border-radius: 5px; font-size: 16px;">
+                Cancelar
+            </a>
+        </div>
+    </form>
+</div>
 
-    <label>Entidad (EPS/ARL):</label>
-    <input name="entidad" required><br><br>
-
-    <label>Tipo:</label>
-    <select name="tipo">
-        <option>Enfermedad general</option>
-        <option>Accidente laboral</option>
-        <option>Accidente tránsito</option>
-        <option>Maternidad</option>
-        <option>Paternidad</option>
-    </select><br><br>
-
-    <label>Fecha inicio:</label>
-    <input type="date" name="fecha" required><br><br>
-
-    <label>Días:</label>
-    <input type="number" name="dias" required><br><br>
-
-    <label>Documentos:</label>
-    <input type="file" name="archivos" multiple><br><br>
-
-    <button type="submit">Guardar</button>
-</form>
-
-</body>
-</html>
-
+<script>
+    // Documentos requeridos por tipo
+    const documentosRequeridos = {
+        "Enfermedad general": ["Soporte incapacidad"],
+        "Accidente laboral": ["Soporte incapacidad", "Epicrisis"],
+        "Accidente tránsito": ["Soporte incapacidad", "Epicrisis", "FURIPS"],
+        "Maternidad": ["Soporte incapacidad", "Epicrisis", "Certificado Nacido Vivo", "Registro Civil"],
+        "Paternidad": ["Epicrisis", "Certificado Nacido Vivo", "Registro Civil"]
+    };
+    
+    function mostrarDocumentosRequeridos() {
+        const tipo = document.getElementById("tipo").value;
+        const infoBox = document.getElementById("documentosInfo");
+        
+        if (tipo && documentosRequeridos[tipo]) {
+            const docs = documentosRequeridos[tipo];
+            infoBox.innerHTML = `<strong>📋 Documentos requeridos:</strong><br>${docs.map(doc => `• ${doc}`).join('<br>')}`;
+            infoBox.style.display = "block";
+        } else {
+            infoBox.style.display = "none";
+        }
+    }
+    
+    function mostrarArchivos() {
+        const input = document.getElementById("archivos");
+        const fileList = document.getElementById("fileList");
+        const files = input.files;
+        
+        if (files.length > 0) {
+            let html = '<strong>Archivos seleccionados:</strong><br>';
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const size = (file.size / 1024).toFixed(2);
+                html += `<div class="file-item">
+                    <span>📄</span>
+                    <span style="flex: 1;">${file.name}</span>
+                    <span style="color: #666;">${size} KB</span>
+                </div>`;
+            }
+            fileList.innerHTML = html;
+        } else {
+            fileList.innerHTML = '';
+        }
+    }
+    
+    // Establecer fecha mínima como hoy
+    document.addEventListener('DOMContentLoaded', function() {
+        const fechaInput = document.getElementById('fecha');
+        const today = new Date().toISOString().split('T')[0];
+        fechaInput.setAttribute('max', today);
+    });
+</script>
+{% endblock %}

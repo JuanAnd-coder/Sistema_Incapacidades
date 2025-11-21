@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Crear Usuario - Sistema de Incapacidades{% endblock %}
+
+{% block breadcrumbs %}
+<span>/</span>
+<a href="{{ url_for('admin.dashboard') }}">Dashboard</a>
+<span>/</span>
+<a href="{{ url_for('usuario.listar') }}">Usuarios</a>
+<span>/</span>
+<span>Crear Usuario</span>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2>➕ Crear Nuevo Usuario</h2>
+    </div>
+    
+    <form method="POST" action="{{ url_for('usuario.crear') }}" style="max-width: 600px;">
+        <div style="margin-bottom: 20px;">
+            <label for="nombre" style="display: block; margin-bottom: 8px; font-weight: 500;">
+                Nombre Completo: <span style="color: red;">*</span>
+            </label>
+            <input type="text" id="nombre" name="nombre" required 
+                   style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 16px;"
+                   placeholder="Ej: Juan Pérez">
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+            <label for="correo" style="display: block; margin-bottom: 8px; font-weight: 500;">
+                Correo Electrónico: <span style="color: red;">*</span>
+            </label>
+            <input type="email" id="correo" name="correo" required 
+                   style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 16px;"
+                   placeholder="Ej: usuario@empresa.com">
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+            <label for="password" style="display: block; margin-bottom: 8px; font-weight: 500;">
+                Contraseña: <span style="color: red;">*</span>
+            </label>
+            <input type="password" id="password" name="password" required 
+                   style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 16px;"
+                   placeholder="Mínimo 6 caracteres" minlength="6">
+            <small style="color: #666; font-size: 12px;">La contraseña debe tener al menos 6 caracteres</small>
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+            <label for="rol" style="display: block; margin-bottom: 8px; font-weight: 500;">
+                Rol: <span style="color: red;">*</span>
+            </label>
+            <select id="rol" name="rol" required 
+                    style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 16px;">
+                <option value="">Seleccione un rol</option>
+                <option value="Administrador">👨‍💼 Administrador</option>
+                <option value="Empleado">👤 Empleado</option>
+                <option value="Revisor">✅ Revisor</option>
+                <option value="Médico">👨‍⚕️ Médico</option>
+            </select>
+            <small style="color: #666; font-size: 12px;">
+                El rol determina los permisos del usuario en el sistema
+            </small>
+        </div>
+        
+        <div style="display: flex; gap: 10px; margin-top: 30px;">
+            <button type="submit" class="btn btn-primary" style="flex: 1;">
+                ✅ Crear Usuario
+            </button>
+            <a href="{{ url_for('usuario.listar') }}" class="btn" 
+               style="background: #6c757d; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
+                Cancelar
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
